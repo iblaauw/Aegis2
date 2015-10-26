@@ -47,7 +47,7 @@ namespace Aegis
 			return Grid.Current.TryGet(xpos, ypos);
 		}
 	}
-
+	
 	public struct IntVector2
 	{
 		public int x;

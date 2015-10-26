@@ -58,6 +58,11 @@ namespace Aegis
 			return true;
 		}
 
+		public bool IsValid(IntVector2 ivec)
+		{
+			return IsValid(ivec.x, ivec.y);
+		}
+
 		public IGridSquare this[int x, int y]
 		{
 			get { return Get(x,y); }
