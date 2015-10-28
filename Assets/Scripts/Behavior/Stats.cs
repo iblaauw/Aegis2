@@ -15,11 +15,6 @@ public class Stats : MonoBehaviour
 	}
 
 	public event Action Death;
-
-	void Start()
-	{
-		Debug.Log("started!");
-	}
 }
 
 /************** Just a note that inheritance works with GetComponent: *********************/

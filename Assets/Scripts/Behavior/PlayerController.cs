@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour {
 	public float speed;
 
 	private SquareMovement moveControl;
-	private Targeter targeter = null;
+	private Projectile projectile;
 
 	// Use this for initialization
 	void Start () {
@@ -22,12 +22,13 @@ public class PlayerController : MonoBehaviour {
 
 		this.gameObject.AddComponent<InvincibleStats>();
 		Stats stats = this.GetComponent<Stats>();
-		Debug.Log(stats);
+
+		this.projectile = CreateProjectile();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		UpdateTarget();
+		UpdateProjectile();
 		UpdateMove();
 	}
 
@@ -54,21 +55,11 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private void UpdateTarget()
+	private void UpdateProjectile()
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			if (this.targeter == null)
-			{
-				this.targeter = CreateTargeter();
-			}
-			this.targeter.Show();
-		}
-		
-		if (Input.GetMouseButtonDown(1))
-		{
-			if (this.targeter != null)
-				this.targeter.Hide();
+			this.projectile.BeginTargeting();
 		}
 	}
 
@@ -81,13 +72,12 @@ public class PlayerController : MonoBehaviour {
 		t.Add(1,0);
 		t.Add(-1,0);
 
-		t.Selected += OnTargetSelect;
-
 		return t;
 	}
 
-	private void OnTargetSelect(IList<IGridSquare> squares)
+	private Projectile CreateProjectile()
 	{
-		Debug.Log("Fired!");
+		Projectile proj = new Projectile(CreateTargeter(), null);
+		return proj;
 	}
 }

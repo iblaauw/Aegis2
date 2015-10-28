@@ -3,14 +3,24 @@ using System.Collections;
 using Aegis;
 
 public class SquareMovement : MonoBehaviour {
-	private int xpos = 0;
-	private int ypos = 0;
+	/***
+	 * Xpos and Ypos are the index that this square is currently at. Note that if they are -1 this means that the
+	 * object hasn't been initialized yet.
+	 ***/
+	private int xpos = -1;
+	private int ypos = -1;
 	private float currentSpeed = 0;
 	private IGridSquare moveTarget = null;
 
 	void Start()
 	{
-		Grid.Current[0,0].AddObject(this.gameObject);
+		if (this.xpos == -1 || this.ypos == -1)
+		{
+			this.xpos = 0;
+			this.ypos = 0;
+			Grid.Current[0,0].AddObject(this.gameObject);
+			this.SnapToGrid();
+		}
 	}
 
 	void FixedUpdate()
@@ -24,6 +34,7 @@ public class SquareMovement : MonoBehaviour {
 		{
 			this.SetPosition(moveTarget);
 			this.CancelMove();
+			this.FireMoveFinished();
 		}
 		else
 		{
@@ -32,7 +43,16 @@ public class SquareMovement : MonoBehaviour {
 		}
 	}
 
+	void OnDestroy()
+	{
+		this.Position.RemoveObject(this.gameObject);
+	}
+
 	/**************** Non-Unity Functions *****************/
+
+	public delegate void LongMoveFinishedCallback(IGridSquare position);
+
+	public event LongMoveFinishedCallback LongMoveFinished;
 
 	public IGridSquare Position
 	{
@@ -54,7 +74,8 @@ public class SquareMovement : MonoBehaviour {
 		if (x < 0 || x >= Grid.GRID_SIZE || y < 0 || y >= Grid.GRID_SIZE)
 			throw new System.IndexOutOfRangeException();
 
-		Grid.Current[xpos,ypos].RemoveObject(this.gameObject);
+		if (xpos != -1 && ypos != -1)
+			Grid.Current[xpos,ypos].RemoveObject(this.gameObject);
 
 		this.xpos = x;
 		this.ypos = y;
@@ -77,6 +98,9 @@ public class SquareMovement : MonoBehaviour {
 		if (speed == 0)
 			throw new System.ArgumentException("Speed cannot be zero.");
 
+		if (speed < 0)
+			throw new System.ArgumentException("Speed cannot be negative.");
+
 		if (this.IsMoving)
 			return;
 
@@ -91,5 +115,11 @@ public class SquareMovement : MonoBehaviour {
 
 		this.moveTarget = null;
 		this.currentSpeed = 0;
+	}
+
+	private void FireMoveFinished()
+	{
+		if (this.LongMoveFinished != null)
+			this.LongMoveFinished(this.Position);
 	}
 }

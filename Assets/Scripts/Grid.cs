@@ -106,6 +106,11 @@ namespace Aegis
 				get { return new Vector2((x + 0.5f) * Grid.SQUARE_SIZE, (y + 0.5f) * Grid.SQUARE_SIZE); }
 			}
 
+			public IntVector2 Location
+			{
+				get { return new IntVector2(this.x, this.y); }
+			}
+
 			public IEnumerable<GameObject> GetObjects()
 			{
 				return grid.gridData[x,y];

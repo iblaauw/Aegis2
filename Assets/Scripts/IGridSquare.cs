@@ -15,6 +15,7 @@ namespace Aegis
 		float Down { get; }
 
 		Vector2 Center { get; }
+		IntVector2 Location { get; }
 		
 		IEnumerable<GameObject> GetObjects();
 		

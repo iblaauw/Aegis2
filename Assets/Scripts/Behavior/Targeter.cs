@@ -65,9 +65,13 @@ namespace Aegis
 
 		void Update()
 		{
+			if (!IsVisible)
+				return;
+
 			if (Input.GetMouseButtonDown(0))
 			{
 				FireSelected();
+				this.Selected = null;
 				Destroy(this.gameObject);
 			}
 		}
@@ -78,6 +82,9 @@ namespace Aegis
 				return;
 
 			IGridSquare mouseSquare = Utilities.GetMouseSquare();
+			if (mouseSquare == null)
+				return;
+
 			IntVector2 mousePos = new IntVector2(mouseSquare.XIndex, mouseSquare.YIndex);
 
 			var gridSquares = this.highlightPositions.Select(h => h + mousePos)
