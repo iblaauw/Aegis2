@@ -7,7 +7,12 @@ public class SquareMovement : MonoBehaviour {
 	private int ypos = 0;
 	private float currentSpeed = 0;
 	private IGridSquare moveTarget = null;
-			
+
+	void Start()
+	{
+		Grid.Current[0,0].AddObject(this.gameObject);
+	}
+
 	void FixedUpdate()
 	{
 		if (!this.IsMoving)
@@ -49,8 +54,13 @@ public class SquareMovement : MonoBehaviour {
 		if (x < 0 || x >= Grid.GRID_SIZE || y < 0 || y >= Grid.GRID_SIZE)
 			throw new System.IndexOutOfRangeException();
 
+		Grid.Current[xpos,ypos].RemoveObject(this.gameObject);
+
 		this.xpos = x;
 		this.ypos = y;
+
+		Grid.Current[xpos,ypos].AddObject(this.gameObject);
+
 		this.SnapToGrid();
 	}
 

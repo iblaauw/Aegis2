@@ -21,6 +21,9 @@ namespace Aegis
 		bool IsAtPosition(GameObject obj);
 
 		IGridSquare GetNext(Direction direction);
+
+		void AddObject(GameObject obj);
+		void RemoveObject(GameObject obj);
 	}
 	
 	public enum Direction

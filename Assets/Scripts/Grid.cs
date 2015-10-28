@@ -127,6 +127,18 @@ namespace Aegis
 
 				return grid.TryGet((int)vec.x, (int)vec.y);
 			}
+
+			public void AddObject(GameObject obj)
+			{
+				if (this.IsAtPosition(obj))
+					throw new InvalidOperationException("That game object is already contained.");
+				grid.gridData[x,y].Add(obj);
+			}
+
+			public void RemoveObject(GameObject obj)
+			{
+				grid.gridData[x,y].Remove(obj);
+			}
 		}
 	}
 

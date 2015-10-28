@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Aegis;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 
@@ -8,59 +9,36 @@ public class PlayerController : MonoBehaviour {
 	public int startY;
 	public float speed;
 
-	/*private int xpos, ypos;
-	private float currentSpeed;
-	private IGridSquare moveTarget;*/
-
 	private SquareMovement moveControl;
+	private Targeter targeter = null;
 
 	// Use this for initialization
 	void Start () {
-		/*this.xpos = startX;
-		this.ypos = startY;
-
-		SnapToGrid();
-		currentSpeed = 0;*/
-
 		moveControl = GetComponent<SquareMovement>();
 		if (moveControl == null)
 			throw new MissingComponentException("Player does not have SquareMovement.");
 
 		moveControl.SetPosition(startX, startY);
+
+		this.gameObject.AddComponent<InvincibleStats>();
+		Stats stats = this.GetComponent<Stats>();
+		Debug.Log(stats);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		UpdateTarget();
+		UpdateMove();
+	}
 
-		if (Input.GetKeyDown(KeyCode.C))
-		{
-			Targeter t = Targeter.Create();
-			t.Add(0,0);
-			t.Add(0,1);
-			t.Add(0,-1);
-			t.Add(1,0);
-			t.Add(-1,0);
-			t.Show();
-		}
-
-
-		/*if (moveTarget != null)
-			return;*/
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			HighlightFollow.Create(0,0);
-			HighlightFollow.Create(0,1);
-			HighlightFollow.Create(0,-1);
-			HighlightFollow.Create(1,0);
-			HighlightFollow.Create(-1,0);
-		}
-
+	private void UpdateMove()
+	{
 		if (moveControl.IsMoving)
 			return;
-
+		
 		IGridSquare current = moveControl.Position;
 		IGridSquare target = null;
-
+		
 		if (Input.GetKey(KeyCode.UpArrow))
 			target = current.GetNext(Direction.UP);
 		else if (Input.GetKey(KeyCode.DownArrow))
@@ -69,38 +47,47 @@ public class PlayerController : MonoBehaviour {
 			target = current.GetNext(Direction.LEFT);
 		else if (Input.GetKey(KeyCode.RightArrow))
 			target = current.GetNext(Direction.RIGHT);
-
+		
 		if (target != null)
 		{
 			moveControl.StartMove(target, this.speed);
 		}
 	}
 
-	/*void FixedUpdate()
+	private void UpdateTarget()
 	{
-		if (currentSpeed != 0)
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			Vector2 offset = moveTarget.Center - (Vector2)this.transform.position;
-
-			if (offset.magnitude < currentSpeed)
+			if (this.targeter == null)
 			{
-				transform.position = moveTarget.Center;
-				currentSpeed = 0;
-				xpos = moveTarget.XIndex;
-				ypos = moveTarget.YIndex;
-				moveTarget = null;
+				this.targeter = CreateTargeter();
 			}
-			else
-			{
-				Vector3 dir = offset.normalized;
-				this.transform.position += dir * currentSpeed;
-			}
+			this.targeter.Show();
+		}
+		
+		if (Input.GetMouseButtonDown(1))
+		{
+			if (this.targeter != null)
+				this.targeter.Hide();
 		}
 	}
 
-	private void SnapToGrid()
+	private Targeter CreateTargeter()
 	{
-		var square = Grid.Current[xpos, ypos];
-		this.transform.position = square.Center;
-	}*/
+		Targeter t = Targeter.Create();
+		t.Add(0,0);
+		t.Add(0,1);
+		t.Add(0,-1);
+		t.Add(1,0);
+		t.Add(-1,0);
+
+		t.Selected += OnTargetSelect;
+
+		return t;
+	}
+
+	private void OnTargetSelect(IList<IGridSquare> squares)
+	{
+		Debug.Log("Fired!");
+	}
 }
