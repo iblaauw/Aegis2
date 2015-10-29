@@ -34,6 +34,8 @@ namespace Aegis
 			moveControl.SetPosition(start);
 			moveControl.StartMove(end, speed);
 
+			g.transform.Rotate(new Vector3(0,0, moveControl.Rotation));
+
 			ProjectileVisual visual = new ProjectileVisual();
 			visual.wrappedObject = g;
 			moveControl.LongMoveFinished += visual.MoveDoneCallback;

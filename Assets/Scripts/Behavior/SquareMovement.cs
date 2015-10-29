@@ -11,6 +11,7 @@ public class SquareMovement : MonoBehaviour {
 	private int ypos = -1;
 	private float currentSpeed = 0;
 	private IGridSquare moveTarget = null;
+	private float rotation = 0;
 
 	void Start()
 	{
@@ -63,6 +64,8 @@ public class SquareMovement : MonoBehaviour {
 
 	public bool IsMoving { get { return currentSpeed != 0; } }
 
+	public float Rotation { get { return rotation; } }
+
 	public void SnapToGrid()
 	{
 		var square = Grid.Current[xpos, ypos];
@@ -106,6 +109,9 @@ public class SquareMovement : MonoBehaviour {
 
 		this.moveTarget = target;
 		this.currentSpeed = speed;
+
+		var quat = Quaternion.FromToRotation(Vector2.right, this.Target.Center - this.Position.Center);
+		this.rotation = quat.eulerAngles.z;
 	}
 
 	public void CancelMove()

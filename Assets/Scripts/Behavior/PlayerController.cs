@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour {
 	public int startY;
 	public float speed;
 
+	public Sprite projectileSprite;
+
 	private SquareMovement moveControl;
 	private Projectile projectile;
 
@@ -22,8 +24,6 @@ public class PlayerController : MonoBehaviour {
 
 		this.gameObject.AddComponent<InvincibleStats>();
 		Stats stats = this.GetComponent<Stats>();
-
-		this.projectile = CreateProjectile();
 	}
 	
 	// Update is called once per frame
@@ -59,7 +59,15 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
-			this.projectile.BeginTargeting();
+			if (this.projectile == null)
+			{
+				this.projectile = CreateProjectile();
+				this.projectile.Finished += () => 
+				{
+					this.projectile = null;
+				};
+				this.projectile.BeginTargeting();
+			}
 		}
 	}
 
@@ -77,7 +85,7 @@ public class PlayerController : MonoBehaviour {
 
 	private Projectile CreateProjectile()
 	{
-		Projectile proj = new Projectile(CreateTargeter(), null);
+		Projectile proj = new Projectile(CreateTargeter(), this.moveControl, this.projectileSprite);
 		return proj;
 	}
 }

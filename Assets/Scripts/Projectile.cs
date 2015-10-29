@@ -7,14 +7,15 @@ namespace Aegis
 {
 	public class Projectile
 	{
+		private SquareMovement source;
 		private Targeter targeter;
 		private Sprite sprite;
 
 		private IList<IGridSquare> targets;
 
-
+		//TODO: make this not pass in a SquareMovement but rather an interface exposing only position
 		//TODO: pass an "attack" object in here, to trigger
-		public Projectile(Targeter targeter, Sprite visualSprite)
+		public Projectile(Targeter targeter, SquareMovement source, Sprite visualSprite)
 		{
 			if (targeter == null)
 				throw new ArgumentNullException("targeter");
@@ -25,6 +26,8 @@ namespace Aegis
 			this.targeter = targeter;
 			this.targeter.Selected += HandleTargetSelected;
 			this.sprite = visualSprite;
+
+			this.source = source;
 		}
 
 		public event Action Finished;
@@ -38,9 +41,20 @@ namespace Aegis
 		{
 			this.targets = locations;
 
-			IGridSquare to = Utilities.GetMouseSquare();
-			ProjectileVisual visual = ProjectileVisual.Create(5, Grid.Current[0,0], to);
-			visual.Finished += this.HandleVisualDone;
+			bool first = true;
+			foreach (IGridSquare to in locations)
+			{
+				ProjectileVisual visual = ProjectileVisual.Create(0.15f, this.source.Position, to, this.sprite);
+				if (first)
+				{
+					visual.Finished += this.HandleVisualDone;
+					first = false;
+				}
+			}
+
+			/*IGridSquare to = Utilities.GetMouseSquare();
+			ProjectileVisual visual = ProjectileVisual.Create(0.15f, this.source.Position, to, this.sprite);
+			visual.Finished += this.HandleVisualDone;*/
 		}
 
 		private void HandleVisualDone()

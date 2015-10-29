@@ -60,12 +60,12 @@ namespace Aegis
 
 		public static IntVector2 operator+(IntVector2 ivec1, IntVector2 ivec2)
 		{
-			return new IntVector2(ivec1.x + ivec2.x, ivec2.y + ivec2.y);
+			return new IntVector2(ivec1.x + ivec2.x, ivec1.y + ivec2.y);
 		}
 
 		public static IntVector2 operator-(IntVector2 ivec1, IntVector2 ivec2)
 		{
-			return new IntVector2(ivec1.x - ivec2.x, ivec2.y - ivec2.y);
+			return new IntVector2(ivec1.x - ivec2.x, ivec1.y - ivec2.y);
 		}
 
 		public static IntVector2 operator*(int mult, IntVector2 ivec)
