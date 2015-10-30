@@ -51,10 +51,6 @@ namespace Aegis
 					first = false;
 				}
 			}
-
-			/*IGridSquare to = Utilities.GetMouseSquare();
-			ProjectileVisual visual = ProjectileVisual.Create(0.15f, this.source.Position, to, this.sprite);
-			visual.Finished += this.HandleVisualDone;*/
 		}
 
 		private void HandleVisualDone()
