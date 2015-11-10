@@ -8,7 +8,7 @@ public class GridLineObject : MonoBehaviour {
 	
 	public static GridLineObject Create(int xpos, int ypos, Direction direction)
 	{
-		GridLineObject obj = PrefabCache.Instance.Create<GridLineObject>("GridLine");
+		GridLineObject obj = GameManager.PrefabCache.Create<GridLineObject>("GridLine");
 		obj.xpos = xpos;
 		obj.ypos = ypos;
 		obj.direction = direction;

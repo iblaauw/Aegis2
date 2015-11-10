@@ -11,7 +11,7 @@ public class HighlightFollow : MonoBehaviour {
 
 	public static HighlightFollow Create(int offsetX, int offsetY)
 	{
-		HighlightFollow script = PrefabCache.Instance.Create<HighlightFollow>("Highlight");
+		HighlightFollow script = GameManager.PrefabCache.Create<HighlightFollow>("Highlight");
 		script.offsetX = offsetX;
 		script.offsetY = offsetY;
 		return script;
