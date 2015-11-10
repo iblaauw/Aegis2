@@ -21,9 +21,6 @@ public class PlayerController : MonoBehaviour {
 			throw new MissingComponentException("Player does not have SquareMovement.");
 
 		moveControl.SetPosition(startX, startY);
-
-		this.gameObject.AddComponent<InvincibleStats>();
-		Stats stats = this.GetComponent<Stats>();
 	}
 	
 	// Update is called once per frame

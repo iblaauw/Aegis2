@@ -13,7 +13,11 @@ public class SquareMovement : MonoBehaviour {
 	private IGridSquare moveTarget = null;
 	private float rotation = 0;
 
-	void Start()
+    private Coroutine currentRoutine;
+
+    #region Unity Messages
+
+    void Start()
 	{
 		if (this.xpos == -1 || this.ypos == -1)
 		{
@@ -24,7 +28,7 @@ public class SquareMovement : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate()
+	/*void FixedUpdate()
 	{
 		if (!this.IsMoving)
 			return;
@@ -42,16 +46,18 @@ public class SquareMovement : MonoBehaviour {
 			Vector3 dir = offset.normalized;
 			this.transform.position += dir * currentSpeed;
 		}
-	}
+	}*/
 
 	void OnDestroy()
 	{
 		this.Position.RemoveObject(this.gameObject);
 	}
 
-	/**************** Non-Unity Functions *****************/
+    #endregion
 
-	public delegate void LongMoveFinishedCallback(IGridSquare position);
+    /**************** Non-Unity Functions *****************/
+
+    public delegate void LongMoveFinishedCallback(IGridSquare position);
 
 	public event LongMoveFinishedCallback LongMoveFinished;
 
@@ -74,7 +80,7 @@ public class SquareMovement : MonoBehaviour {
 
 	public void SetPosition(int x, int y)
 	{
-		if (x < 0 || x >= Grid.GRID_SIZE || y < 0 || y >= Grid.GRID_SIZE)
+        if (!Grid.Current.IsValid(x,y))
 			throw new System.IndexOutOfRangeException();
 
 		if (xpos != -1 && ypos != -1)
@@ -112,6 +118,8 @@ public class SquareMovement : MonoBehaviour {
 
 		var quat = Quaternion.FromToRotation(Vector2.right, this.Target.Center - this.Position.Center);
 		this.rotation = quat.eulerAngles.z;
+
+        this.currentRoutine = this.StartCoroutine(MoveCoroutine());
 	}
 
 	public void CancelMove()
@@ -119,9 +127,39 @@ public class SquareMovement : MonoBehaviour {
 		if (!this.IsMoving)
 			return;
 
-		this.moveTarget = null;
-		this.currentSpeed = 0;
+        StopCoroutine(currentRoutine);
+        DoStopMove();
 	}
+
+    private IEnumerator MoveCoroutine()
+    {
+        Vector2 offset = moveTarget.Center - (Vector2)this.transform.position;
+
+        while (offset.magnitude >= currentSpeed)
+        {
+            // Check if canceled
+            if (!IsMoving) 
+                yield break;
+
+            Vector2 newPos = Vector2.MoveTowards(this.transform.position, this.moveTarget.Center, this.currentSpeed);
+            this.transform.position = newPos;
+
+            yield return new WaitForFixedUpdate();
+
+            offset = moveTarget.Center - (Vector2)this.transform.position;
+        }
+
+        this.SetPosition(moveTarget);
+        this.DoStopMove();
+        this.FireMoveFinished();
+    }
+
+    private void DoStopMove()
+    {
+        this.moveTarget = null;
+        this.currentSpeed = 0;
+        this.currentRoutine = null;
+    }
 
 	private void FireMoveFinished()
 	{
