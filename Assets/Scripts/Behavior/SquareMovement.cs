@@ -28,26 +28,6 @@ public class SquareMovement : MonoBehaviour {
 		}
 	}
 
-	/*void FixedUpdate()
-	{
-		if (!this.IsMoving)
-			return;
-
-		Vector2 offset = moveTarget.Center - (Vector2)this.transform.position;
-		
-		if (offset.magnitude < currentSpeed)
-		{
-			this.SetPosition(moveTarget);
-			this.CancelMove();
-			this.FireMoveFinished();
-		}
-		else
-		{
-			Vector3 dir = offset.normalized;
-			this.transform.position += dir * currentSpeed;
-		}
-	}*/
-
 	void OnDestroy()
 	{
 		this.Position.RemoveObject(this.gameObject);
