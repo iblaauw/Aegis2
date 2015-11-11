@@ -9,13 +9,13 @@ namespace Aegis
 	{
 		private SquareMovement source;
 		private Targeter targeter;
-		private Sprite sprite;
+		private GameObject visualPrefab;
 
 		private IList<IGridSquare> targets;
 
 		//TODO: make this not pass in a SquareMovement but rather an interface exposing only position
 		//TODO: pass an "attack" object in here, to trigger
-		public Projectile(Targeter targeter, SquareMovement source, Sprite visualSprite)
+		public Projectile(Targeter targeter, SquareMovement source, GameObject visualPrefab)
 		{
 			if (targeter == null)
 				throw new ArgumentNullException("targeter");
@@ -25,7 +25,7 @@ namespace Aegis
 
 			this.targeter = targeter;
 			this.targeter.Selected += HandleTargetSelected;
-			this.sprite = visualSprite;
+			this.visualPrefab = visualPrefab;
 
 			this.source = source;
 		}
@@ -44,7 +44,14 @@ namespace Aegis
 			bool first = true;
 			foreach (IGridSquare to in locations)
 			{
-				ProjectileVisual visual = ProjectileVisual.Create(0.15f, this.source.Position, to, this.sprite);
+                GameObject instance = GameObject.Instantiate(visualPrefab);
+
+                ProjectileVisual visual = instance.GetComponentForce<ProjectileVisual>();
+                visual.Target = to;
+                visual.StartSquare = this.source.Position;
+                
+
+                //ProjectileVisual visual = ProjectileVisual.Create(0.15f, this.source.Position, to, this.sprite);
 				if (first)
 				{
 					visual.Finished += this.HandleVisualDone;

@@ -46,7 +46,25 @@ namespace Aegis
 
 			return Grid.Current.TryGet(xpos, ypos);
 		}
-	}
+
+        public static T GetComponentForce<T>(this GameObject gameObject)
+        {
+            T component = gameObject.GetComponent<T>();
+            if (component == null)
+                throw new MissingComponentException();
+
+            return component;
+        }
+
+        public static T GetComponentForce<T>(this Component gameObject)
+        {
+            T component = gameObject.GetComponent<T>();
+            if (component == null)
+                throw new MissingComponentException();
+
+            return component;
+        }
+    }
 	
 	public struct IntVector2
 	{

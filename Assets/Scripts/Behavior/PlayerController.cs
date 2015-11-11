@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using Aegis;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Aegis;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
@@ -9,17 +9,14 @@ public class PlayerController : MonoBehaviour {
 	public int startY;
 	public float speed;
 
-	public Sprite projectileSprite;
+	public GameObject projectilePrefab;
 
 	private SquareMovement moveControl;
 	private Projectile projectile;
 
 	// Use this for initialization
 	void Start () {
-		moveControl = GetComponent<SquareMovement>();
-		if (moveControl == null)
-			throw new MissingComponentException("Player does not have SquareMovement.");
-
+		moveControl = this.GetComponentForce<SquareMovement>();
 		moveControl.SetPosition(startX, startY);
 	}
 	
@@ -82,7 +79,7 @@ public class PlayerController : MonoBehaviour {
 
 	private Projectile CreateProjectile()
 	{
-		Projectile proj = new Projectile(CreateTargeter(), this.moveControl, this.projectileSprite);
+		Projectile proj = new Projectile(CreateTargeter(), this.moveControl, this.projectilePrefab);
 		return proj;
 	}
 }
